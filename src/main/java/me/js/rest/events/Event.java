@@ -2,12 +2,16 @@ package me.js.rest.events;
 
 import lombok.*;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter @EqualsAndHashCode(of = "id")
+@Entity
 public class Event {
 
+    @Id
+    @GeneratedValue
     private Integer id;
     private String name;
     private String description;
@@ -21,6 +25,9 @@ public class Event {
     private int limitOfEnrollment;
     private boolean offline;
     private boolean free;
-    private EventStatus eventStatus;
 
+    // Enumerated 기본값이 ORDINAL인데 STRING을 권장
+    // ORIDINAL은 enum의 순서값이 저장되는데 나중에 데이터가 꼬일 수 있음
+    @Enumerated(EnumType.STRING)
+    private EventStatus eventStatus;
 }
