@@ -29,5 +29,5 @@ public class Event {
     // Enumerated 기본값이 ORDINAL인데 STRING을 권장
     // ORIDINAL은 enum의 순서값이 저장되는데 나중에 데이터가 꼬일 수 있음
     @Enumerated(EnumType.STRING)
-    private EventStatus eventStatus;
+    private EventStatus eventStatus = EventStatus.DRAFT;
 }

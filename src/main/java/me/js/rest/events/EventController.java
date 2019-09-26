@@ -1,13 +1,13 @@
 package me.js.rest.events;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import me.js.rest.events.dto.EventDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
@@ -20,16 +20,19 @@ public class EventController {
      EventRepository eventRepository;*/
     // 생성자 DI or @Autowired
     private final EventRepository eventRepository;
+    private final ModelMapper modelmapper;
     // 스프링 생성자가 1개만 있고, 생성자로 사용하는 파라미터가 이미 Bean으로 등록이 되어있다면, @Autowired 생략가능 (스프링 4.3 이상)
     // @Autowired
-    public EventController(EventRepository eventRepository) {
+    public EventController(EventRepository eventRepository, ModelMapper modelMapper) {
         this.eventRepository = eventRepository;
+        this.modelmapper = modelMapper;
     }
 
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody Event event) {
-        Event newevent = this.eventRepository.save(event);
-        URI createdURI = linkTo(EventController.class).slash(newevent.getId()).toUri();
+    public ResponseEntity createEvent(@RequestBody EventDto eventDto) {
+        Event event = modelmapper.map(eventDto, Event.class);
+        Event newEvent = this.eventRepository.save(event);
+        URI createdURI = linkTo(EventController.class).slash(newEvent.getId()).toUri();
         return ResponseEntity.created(createdURI).body(event);
     }
 }
