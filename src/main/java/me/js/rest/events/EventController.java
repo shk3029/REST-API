@@ -2,6 +2,7 @@ package me.js.rest.events;
 
 import me.js.rest.events.dto.EventDto;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.internal.Errors;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -29,7 +31,10 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody EventDto eventDto) {
+    public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
+        if(errors.hasErrors()) {
+            return ResponseEntity.badRequest().build();
+        }
         Event event = modelmapper.map(eventDto, Event.class);
         Event newEvent = this.eventRepository.save(event);
         URI createdURI = linkTo(EventController.class).slash(newEvent.getId()).toUri();
