@@ -36,11 +36,14 @@ public class EventController {
     @PostMapping
     public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
         eventValidator.validate(eventDto, errors);
-
+        // Errors는 java bean 스펙을 준수하는 객체가 아니다
+        // 따라서 json 변환을 할 수 없음
+        // -> ErrorsSerializer를 이용해서 JSON 변환
         if(errors.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
 
+        // java bean 스펙을 준수하는 객체
         Event event = modelmapper.map(eventDto, Event.class);
         Event newEvent = this.eventRepository.save(event);
         URI createdURI = linkTo(EventController.class).slash(newEvent.getId()).toUri();
