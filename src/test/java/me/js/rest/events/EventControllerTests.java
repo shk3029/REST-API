@@ -110,4 +110,24 @@ public class EventControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void create_Event_Bad_Request_Empty_Input_잘못된파라미터() throws Exception {
+        EventDto eventDto = EventDto.builder()
+                .name("Sping22")
+                .description("REST TEST SPRING")
+                .beginEnrollmentDateTime(LocalDateTime.of(2019, 11, 23 ,12, 10))
+                .closeEnrollmentDateTime(LocalDateTime.of(2017, 11, 24 ,12, 10))
+                .beginEventDateTime(LocalDateTime.of(2019, 11, 25 ,12, 10))
+                .endEventDateTime(LocalDateTime.of(2017, 11, 26 ,12, 10))
+                .basePrice(1000)
+                .maxPrice(200)
+                .limitOfEnrollment(100)
+                .location("강남역 D2")
+                .build();
+        this.mockMvc.perform(post("/api/events")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(this.objectMapper.writeValueAsString(eventDto)))
+                .andExpect(status().isBadRequest());
+    }
+
 }
