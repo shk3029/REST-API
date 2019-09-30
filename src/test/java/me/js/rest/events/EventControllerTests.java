@@ -46,7 +46,7 @@ public class EventControllerTests {
                 .description("REST TEST SPRING")
                 .beginEnrollmentDateTime(LocalDateTime.of(2018, 11, 23 ,12, 10))
                 .closeEnrollmentDateTime(LocalDateTime.of(2018, 11, 24 ,12, 10))
-                .beginEnrollmentDateTime(LocalDateTime.of(2018, 11, 25 ,12, 10))
+                .beginEventDateTime(LocalDateTime.of(2018, 11, 25 ,12, 10))
                 .endEventDateTime(LocalDateTime.of(2018, 11, 26 ,12, 10))
                 .basePrice(100)
                 .maxPrice(200)
@@ -54,7 +54,6 @@ public class EventControllerTests {
                 .location("강남역 D2")
                 .build();
 
-        //Mockito.when(eventRepository.save(event)).thenReturn(event);
 
 
         mockMvc.perform(post("/api/events/")
@@ -67,8 +66,8 @@ public class EventControllerTests {
                 .andExpect(jsonPath("id").exists()) // id가 존재하는지 테스트
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("id").value(Matchers.not(100)))
-                .andExpect(jsonPath("free").value(Matchers.not(true)))
+                .andExpect(jsonPath("free").value((false)))
+                .andExpect(jsonPath("offline").value(true))
                 .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()));
     }
 
