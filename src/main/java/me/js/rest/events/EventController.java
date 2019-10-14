@@ -1,8 +1,8 @@
 package me.js.rest.events;
 
+import me.js.rest.common.ErrorResource;
 import me.js.rest.events.dto.EventDto;
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +42,7 @@ public class EventController {
         // 따라서 json 변환을 할 수 없음
         // -> ErrorsSerializer를 이용해서 JSON 변환
         if(errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(new ErrorResource(errors));
         }
 
         // java bean 스펙을 준수하는 객체
