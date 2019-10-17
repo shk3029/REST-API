@@ -86,7 +86,36 @@ public class EventController {
         return ResponseEntity.ok(eventResource);
     }
 
+    // Vaild 한 후의 결과는 Errors 또는 bindingResult에 담아서 줌 (스프링이)
+    @PutMapping("/{id}")
+    public ResponseEntity updateEvent(@PathVariable Integer id,
+                                      @RequestBody @Valid EventDto eventDto,
+                                      Errors errors) {
+        Optional<Event> optionalEvent = this.eventRepository.findById(id);
+        if(optionalEvent.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if(errors.hasErrors()) { // Dto 안의 @Vaild check에서 걸렸을 경우, hasErrors가 true
+            return badRequest(errors);
+        }
+
+        this.eventValidator.validate(eventDto, errors);
+        if(errors.hasErrors()) {
+            return badRequest(errors);
+        }
+
+        Event existingEvent = optionalEvent.get();
+        // modelMapper.map(from, to) ->  기존 from -> to 값을 덮어써줌
+        this.modelmapper.map(eventDto, existingEvent);
+        Event savedEvent = this.eventRepository.save(existingEvent);
+        EventResource eventResource = new EventResource(savedEvent);
+        eventResource.add(new Link("/docs/index.html#resources-events-update").withRel("profile"));
+        return ResponseEntity.ok(eventResource);
+    }
+
     private ResponseEntity badRequest(Errors errors) {
         return ResponseEntity.badRequest().body(new ErrorResource(errors));
     }
+
 }
