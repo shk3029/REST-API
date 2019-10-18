@@ -1,6 +1,7 @@
 package me.js.rest.events;
 
 import lombok.*;
+import me.js.rest.accounts.Account;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,6 +31,10 @@ public class Event {
     // ORIDINAL은 enum의 순서값이 저장되는데 나중에 데이터가 꼬일 수 있음
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus = EventStatus.DRAFT;
+
+    @ManyToOne
+    private Account manager;
+
 
     public void update() {
         // Update free
