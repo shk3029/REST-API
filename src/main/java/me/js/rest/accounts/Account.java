@@ -8,6 +8,7 @@ import java.util.Set;
 @Entity
 @Getter @Setter
 @EqualsAndHashCode(of = "id")
+
 @Builder @NoArgsConstructor @AllArgsConstructor
 public class Account {
     @Id @GeneratedValue
